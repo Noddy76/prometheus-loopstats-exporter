@@ -41,9 +41,9 @@ test:
 	$(GOTEST) -v ./...
 
 build:
-	GOOS=linux GOARCH=amd64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-amd64
-	GOOS=linux GOARCH=arm GOARM=5 $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-armhf
-	GOOS=linux GOARCH=arm64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-arm64
+	GOOS=linux GOARCH=amd64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-v$(VERSION)-linux-amd64
+	GOOS=linux GOARCH=arm GOARM=5 $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-v$(VERSION)-linux-armhf
+	GOOS=linux GOARCH=arm64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-v$(VERSION)-linux-arm64
 
 clean:
 	$(GOCLEAN)
