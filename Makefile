@@ -17,16 +17,33 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 BINARY_NAME=prometheus-loopstats-exporter
-    
+
+TAG_COMMIT := $(shell git rev-list --abbrev-commit --tags --max-count=1)
+TAG := $(shell git describe --abbrev=0 --tags ${TAG_COMMIT} 2>/dev/null || true)
+COMMIT := $(shell git rev-parse --short HEAD)
+DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
+VERSION := $(TAG:v%=%)
+ifneq ($(COMMIT), $(TAG_COMMIT))
+	VERSION := $(VERSION)-next-$(COMMIT)-$(DATE)
+endif
+ifeq ($(VERSION),)
+	VERSION := $(COMMIT)-$(DATA)
+endif
+ifneq ($(shell git status --porcelain),)
+	VERSION := $(VERSION)-dirty
+endif
+
+FLAGS := -ldflags "-X main.version=$(VERSION)"
+
 all: test build
 
-test: 
+test:
 	$(GOTEST) -v ./...
 
 build:
-	GOOS=linux GOARCH=amd64       $(GOBUILD) -o bin/amd64/$(BINARY_NAME)
-	GOOS=linux GOARCH=arm GOARM=5 $(GOBUILD) -o bin/armhf/$(BINARY_NAME)
-	GOOS=linux GOARCH=arm64       $(GOBUILD) -o bin/arm64/$(BINARY_NAME)
+	GOOS=linux GOARCH=amd64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-amd64
+	GOOS=linux GOARCH=arm GOARM=5 $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-armhf
+	GOOS=linux GOARCH=arm64       $(GOBUILD) $(FLAGS) -o bin/$(BINARY_NAME)-$(VERSION)-linux-arm64
 
 clean:
 	$(GOCLEAN)

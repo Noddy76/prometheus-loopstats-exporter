@@ -25,7 +25,10 @@ import (
 	"github.com/hpcloud/tail"
 )
 
+var version = "dev"
+
 func main() {
+	fmt.Printf("prometheus-loopstats-exporter - version %s\n\n", version)
 	t, err := tail.TailFile("/var/log/ntpstats/loopstats", tail.Config{Follow: true, ReOpen: true, Poll: true})
 
 	if err != nil {
