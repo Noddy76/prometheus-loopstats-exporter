@@ -1,0 +1,10 @@
+[Unit]
+Description=NTPD loopstats exporter for Prometheus Node Exporter
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/prometheus-loopstats-exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
